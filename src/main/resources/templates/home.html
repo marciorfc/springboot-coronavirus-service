@@ -12,7 +12,7 @@
     <p>Número atual de casos reportados no mundo</p>
     
     <div class="jumbotron">
-      <h1 class="display-4" th:text="${totalReportedCases}"></h1>
+      <h1 class="display-4" th:text="${#numbers.formatDecimal(totalReportedCases, 1, 'DEFAULT', 0, 'DEFAULT')}"></h1>
       <p class="lead">Total de casos reportados até hoje.</p>
       
     </div>
@@ -27,7 +27,7 @@
         <tr th:each="locationStat : ${locationStats}">
           <td th:text="${locationStat.state}"></td>
           <td th:text="${locationStat.country}"></td>
-          <td style="text-align: right" th:text="${locationStat.latestTotalCases}">0</td>
+          <td style="text-align: right" th:text="${#numbers.formatDecimal(locationStat.latestTotalCases, 1, 'DEFAULT', 0, 'DEFAULT')}">0</td>
         </tr>
       </table>
     </div>

@@ -1,5 +1,8 @@
 package com.base.coronavirustracker.controller;
 
+import java.util.List;
+
+import com.base.coronavirustracker.model.LocationStats;
 import com.base.coronavirustracker.services.CoronaVirusDataService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,13 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("locationStats", service.getAllStats());
+        List<LocationStats> allStats = service.getAllStats();
+        
+        int totalReportedCases = allStats.stream().
+            mapToInt(stat -> stat.getLatestTotalCases()).sum();
+        model.addAttribute("locationStats", allStats);
+        model.addAttribute("totalReportedCases", totalReportedCases);
+        
         return "home";
     }
 

@@ -22,12 +22,18 @@
         <tr>
           <th>Estado/Província</th>
           <th>País</th>
-          <th>Total de casos reportados</th>
+          <th>Total de casos reportado</th>
+          <th>Total de óbitos reportado</th>
         </tr>
         <tr th:each="locationStat : ${locationStats}">
           <td th:text="${locationStat.state}"></td>
           <td th:text="${locationStat.country}"></td>
           <td style="text-align: right" th:text="${#numbers.formatDecimal(locationStat.latestTotalCases, 1, 'DEFAULT', 0, 'DEFAULT')}">0</td>
+          <td style="text-align: right" th:text="${#numbers.formatDecimal(locationStat.latestTotalDeaths, 1, 'DEFAULT', 0, 'DEFAULT')}">0</td>
+        </tr>
+        <tr></tr>
+        <tr>
+          <td colspan="3" style="font-size: 14">Fonte: Centro de Ciência e Engenharia de Sistemas da Universidade Johns Hopkins, Maryland, Estados Unidos.</td>
         </tr>
       </table>
     </div>

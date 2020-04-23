@@ -18,9 +18,10 @@ public class CoronaResource {
     @Autowired
     private CoronaVirusDataService service;
 
+    
     @GetMapping()
     public ResponseEntity<List<LocationStats>> findAll() {
         List<LocationStats> listDto = service.getAllStats();
-        return ResponseEntity.ok().body(listDto);
+        return ResponseEntity.ok().header("Access-Control-Allow-Origin", "*").body(listDto);
     }
 }

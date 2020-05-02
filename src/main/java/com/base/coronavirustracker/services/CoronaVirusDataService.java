@@ -119,7 +119,7 @@ public class CoronaVirusDataService {
                 Integer.valueOf(state2.getTotalCases()) - Integer.valueOf(state1.getTotalCases());
         Comparator<EstadosTotalTO> compareByTotalCasesPer100k = (EstadosTotalTO state1, EstadosTotalTO state2) -> 
                 Double.valueOf(state2.getTotalCasesPer100kInhabitants()).intValue() - Double.valueOf(state1.getTotalCasesPer100kInhabitants()).intValue();        
-        Collections.sort(newStatesTotal, compareByTotalCasesPer100k);
+        Collections.sort(newStatesTotal, compareByTotalCases);
            
 
         this.allStatesTotal = newStatesTotal;

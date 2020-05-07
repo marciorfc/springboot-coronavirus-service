@@ -15,11 +15,11 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.base.coronavirustracker.enumeration.CSVColumnEnum;
 import com.base.coronavirustracker.enumeration.EstadoEnum;
 import com.base.coronavirustracker.model.EstadosTotalTO;
 import com.base.coronavirustracker.model.LocationStats;
 import com.base.coronavirustracker.util.HttpConnectionUtil;
-
 
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,17 +32,29 @@ public class CoronaVirusDataService {
     private static String VIRUS_LETAL_DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv";
 
     private static String VIRUS_BRASIL_DATA_URL = "https://raw.githubusercontent.com/wcota/covid19br/master/cases-brazil-total.csv";
+    private static String VIRUS_BRASIL_HISTORY_DATA_URL = "https://raw.githubusercontent.com/wcota/covid19br/master/cases-brazil-states.csv";
+
 
     private List<LocationStats> allStats = new ArrayList<LocationStats>();
-    private List<EstadosTotalTO> allStatesTotal = new ArrayList<EstadosTotalTO>(); 
+    private List<EstadosTotalTO> allStatesTotal = new ArrayList<EstadosTotalTO>();
     private EstadosTotalTO countryLocalSummary = new EstadosTotalTO();
-   
+    private List<EstadosTotalTO> allStatesHistory = new ArrayList<EstadosTotalTO>();
+
     @PostConstruct
     @Scheduled(cron = "* * 1 * * *")
     public void fetchVirusData() throws IOException, InterruptedException {
         fetchVirusAllWorldData();
         fetchVirusAllWorldLethalData();
         fetchBrasilStatesTotalVirusData();
+        fetchBrasilStatesHistoricalVirusData();
+    }
+
+    public List<EstadosTotalTO> getAllStatesHistory() {
+        return allStatesHistory;
+    }
+
+    public void setAllStatesHistory(List<EstadosTotalTO> allStatesHistory) {
+        this.allStatesHistory = allStatesHistory;
     }
 
     public void fetchVirusAllWorldData() throws IOException, InterruptedException {
@@ -90,19 +102,19 @@ public class CoronaVirusDataService {
         for (CSVRecord record : records) {
             final EstadosTotalTO stateTotal = new EstadosTotalTO();
             
-            String sigla = record.get(EstadosTotalTO.EstadosTotalEnum.STATE.getCodigo());
+            String sigla = record.get(CSVColumnEnum.STATE.getCodigo());
             stateTotal.setState(EstadoEnum.fromCodigo(sigla) != null ? EstadoEnum.fromCodigo(sigla).getNome() : sigla);
             
-            stateTotal.setTotalCases(record.get(EstadosTotalTO.EstadosTotalEnum.TOTAL_CASES.getCodigo()));	
-            stateTotal.setTotalCasesMS(record.get(EstadosTotalTO.EstadosTotalEnum.TOTAL_CASES_MS.getCodigo()));
-            stateTotal.setNotConfirmedByMS(record.get(EstadosTotalTO.EstadosTotalEnum.NOT_CONFIRMED_BY_MS.getCodigo()));
-            stateTotal.setDeaths(record.get(EstadosTotalTO.EstadosTotalEnum.DEATHS.getCodigo()));
-            stateTotal.setDeathsMS(record.get(EstadosTotalTO.EstadosTotalEnum.DEATHS_MS.getCodigo()));
-            stateTotal.setUrl(record.get(EstadosTotalTO.EstadosTotalEnum.URL.getCodigo()));
-            stateTotal.setDeathsPer100kInhabitants(record.get(EstadosTotalTO.EstadosTotalEnum.DEATHS_PER_100K.getCodigo()));
-            stateTotal.setTotalCasesPer100kInhabitants(record.get(EstadosTotalTO.EstadosTotalEnum.TOTAL_CASES_100K.getCodigo()));
-            stateTotal.setDeathsByTotalCases(record.get(EstadosTotalTO.EstadosTotalEnum.DEATHS_BY_TOTAL_CASES.getCodigo()));
-            stateTotal.setRecovered(record.get(EstadosTotalTO.EstadosTotalEnum.RECOVERED.getCodigo()));
+            stateTotal.setTotalCases(record.get(CSVColumnEnum.TOTAL_CASES.getCodigo()));	
+            stateTotal.setTotalCasesMS(record.get(CSVColumnEnum.TOTAL_CASES_MS.getCodigo()));
+            stateTotal.setNotConfirmedByMS(record.get(CSVColumnEnum.NOT_CONFIRMED_BY_MS.getCodigo()));
+            stateTotal.setDeaths(record.get(CSVColumnEnum.DEATHS.getCodigo()));
+            stateTotal.setDeathsMS(record.get(CSVColumnEnum.DEATHS_MS.getCodigo()));
+            stateTotal.setUrl(record.get(CSVColumnEnum.URL.getCodigo()));
+            stateTotal.setDeathsPer100kInhabitants(record.get(CSVColumnEnum.DEATHS_PER_100K.getCodigo()));
+            stateTotal.setTotalCasesPer100kInhabitants(record.get(CSVColumnEnum.TOTAL_CASES_100K.getCodigo()));
+            stateTotal.setDeathsByTotalCases(record.get(CSVColumnEnum.DEATHS_BY_TOTAL_CASES.getCodigo()));
+            stateTotal.setRecovered(record.get(CSVColumnEnum.RECOVERED.getCodigo()));
 
             
             newStatesTotal.add(stateTotal);
@@ -123,6 +135,40 @@ public class CoronaVirusDataService {
            
 
         this.allStatesTotal = newStatesTotal;
+
+    }
+
+
+    public void fetchBrasilStatesHistoricalVirusData() throws IOException, InterruptedException {
+        List<EstadosTotalTO> newHistoryTotal = new ArrayList<EstadosTotalTO>();
+        Iterable<CSVRecord> records = HttpConnectionUtil.retrieveCSVData(VIRUS_BRASIL_HISTORY_DATA_URL);
+
+        for (CSVRecord record : records) {
+            final EstadosTotalTO stateTotal = new EstadosTotalTO();
+            
+            String sigla = record.get(CSVColumnEnum.STATE.getCodigo());
+            stateTotal.setState(EstadoEnum.fromCodigo(sigla) != null ? EstadoEnum.fromCodigo(sigla).getNome() : sigla);
+            
+            stateTotal.setDate(record.get(CSVColumnEnum.DATE.getCodigo()));	
+            stateTotal.setNewCases(record.get(CSVColumnEnum.NEW_CASES.getCodigo()));
+            stateTotal.setTotalCases(record.get(CSVColumnEnum.TOTAL_CASES.getCodigo()));	
+            stateTotal.setTotalCasesMS(record.get(CSVColumnEnum.TOTAL_CASES_MS.getCodigo()));
+            stateTotal.setDeaths(record.get(CSVColumnEnum.DEATHS.getCodigo()));
+            stateTotal.setNewDeaths(record.get(CSVColumnEnum.NEW_DEATHS.getCodigo()));
+            stateTotal.setDeathsMS(record.get(CSVColumnEnum.DEATHS_MS.getCodigo()));
+            stateTotal.setDeathsPer100kInhabitants(record.get(CSVColumnEnum.DEATHS_PER_100K.getCodigo()));
+            stateTotal.setTotalCasesPer100kInhabitants(record.get(CSVColumnEnum.TOTAL_CASES_100K.getCodigo()));
+            stateTotal.setDeathsByTotalCases(record.get(CSVColumnEnum.DEATHS_BY_TOTAL_CASES.getCodigo()));
+            stateTotal.setRecovered(record.get(CSVColumnEnum.RECOVERED.getCodigo()));
+
+            
+            newHistoryTotal.add(stateTotal);
+            System.out.println(stateTotal);
+           
+        }
+
+        
+        this.allStatesHistory = newHistoryTotal;
 
     }
     

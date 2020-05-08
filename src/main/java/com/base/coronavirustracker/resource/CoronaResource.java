@@ -41,6 +41,12 @@ public class CoronaResource {
         return ResponseEntity.ok().body(dto);
     }
 
+    @GetMapping(value = "/country/local/history")
+    public ResponseEntity<List<EstadosTotalTO>> findLocalCountryHistoryStats() {
+        List<EstadosTotalTO> listDto = service.getLocalCountryHistory();
+        return ResponseEntity.ok().body(listDto);
+    }
+
 
 
 }

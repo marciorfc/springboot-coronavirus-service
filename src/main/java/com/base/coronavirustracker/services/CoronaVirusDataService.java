@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -47,6 +48,10 @@ public class CoronaVirusDataService {
         fetchVirusAllWorldLethalData();
         fetchBrasilStatesTotalVirusData();
         fetchBrasilStatesHistoricalVirusData();
+    }
+
+    public List<EstadosTotalTO> getLocalCountryHistory() {
+        return allStatesHistory.stream().filter(estadoTO -> estadoTO.getState().equals("TOTAL") && estadoTO.getDate().compareTo("2020-03-10") > 0).collect(Collectors.toList());
     }
 
     public List<EstadosTotalTO> getAllStatesHistory() {

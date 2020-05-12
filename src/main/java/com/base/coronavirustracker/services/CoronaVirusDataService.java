@@ -132,11 +132,11 @@ public class CoronaVirusDataService {
 
         newStatesTotal = newStatesTotal.subList(1, newStatesTotal.size());
         //order by number of cases desc
-        Comparator<EstadosTotalTO> compareByTotalCases = (EstadosTotalTO state1, EstadosTotalTO state2) -> 
-                Integer.valueOf(state2.getTotalCases()) - Integer.valueOf(state1.getTotalCases());
+        Comparator<EstadosTotalTO> compareByTotalCasesMS = (EstadosTotalTO state1, EstadosTotalTO state2) -> 
+                Integer.valueOf(state2.getTotalCasesMS()) - Integer.valueOf(state1.getTotalCasesMS());
         Comparator<EstadosTotalTO> compareByTotalCasesPer100k = (EstadosTotalTO state1, EstadosTotalTO state2) -> 
                 Double.valueOf(state2.getTotalCasesPer100kInhabitants()).intValue() - Double.valueOf(state1.getTotalCasesPer100kInhabitants()).intValue();        
-        Collections.sort(newStatesTotal, compareByTotalCases);
+        Collections.sort(newStatesTotal, compareByTotalCasesMS);
            
 
         this.allStatesTotal = newStatesTotal;

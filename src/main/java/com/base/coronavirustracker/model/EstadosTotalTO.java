@@ -6,6 +6,7 @@ import lombok.Data;
 public class EstadosTotalTO {
 
     private String date;
+    private String sigla;
     private String state;
     private String newCases;
     private String totalCases;	

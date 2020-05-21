@@ -20,6 +20,7 @@ import com.base.coronavirustracker.enumeration.CSVColumnEnum;
 import com.base.coronavirustracker.enumeration.EstadoEnum;
 import com.base.coronavirustracker.model.EstadosTotalTO;
 import com.base.coronavirustracker.model.LocationStats;
+import com.base.coronavirustracker.util.DateUtils;
 import com.base.coronavirustracker.util.HttpConnectionUtil;
 
 import org.apache.commons.csv.CSVRecord;
@@ -109,7 +110,7 @@ public class CoronaVirusDataService {
             
             String sigla = record.get(CSVColumnEnum.STATE.getCodigo());
             stateTotal.setState(EstadoEnum.fromCodigo(sigla) != null ? EstadoEnum.fromCodigo(sigla).getNome() : sigla);
-            
+            stateTotal.setSigla(sigla);
             stateTotal.setTotalCases(record.get(CSVColumnEnum.TOTAL_CASES.getCodigo()));	
             stateTotal.setTotalCasesMS(record.get(CSVColumnEnum.TOTAL_CASES_MS.getCodigo()));
             stateTotal.setNotConfirmedByMS(record.get(CSVColumnEnum.NOT_CONFIRMED_BY_MS.getCodigo()));
@@ -123,7 +124,7 @@ public class CoronaVirusDataService {
 
             
             newStatesTotal.add(stateTotal);
-            System.out.println(stateTotal);
+           // System.out.println(stateTotal);
            
         }
 
@@ -131,7 +132,7 @@ public class CoronaVirusDataService {
         this.countryLocalSummary = newStatesTotal.get(0);
 
         newStatesTotal = newStatesTotal.subList(1, newStatesTotal.size());
-        //order by number of cases desc
+        //order by number of cases ms desc
         Comparator<EstadosTotalTO> compareByTotalCasesMS = (EstadosTotalTO state1, EstadosTotalTO state2) -> 
                 Integer.valueOf(state2.getTotalCasesMS()) - Integer.valueOf(state1.getTotalCasesMS());
         Comparator<EstadosTotalTO> compareByTotalCasesPer100k = (EstadosTotalTO state1, EstadosTotalTO state2) -> 
@@ -152,8 +153,9 @@ public class CoronaVirusDataService {
             final EstadosTotalTO stateTotal = new EstadosTotalTO();
             
             String sigla = record.get(CSVColumnEnum.STATE.getCodigo());
+            stateTotal.setSigla(sigla);
             stateTotal.setState(EstadoEnum.fromCodigo(sigla) != null ? EstadoEnum.fromCodigo(sigla).getNome() : sigla);
-            
+           
             stateTotal.setDate(record.get(CSVColumnEnum.DATE.getCodigo()));	
             stateTotal.setNewCases(record.get(CSVColumnEnum.NEW_CASES.getCodigo()));
             stateTotal.setTotalCases(record.get(CSVColumnEnum.TOTAL_CASES.getCodigo()));	
@@ -168,7 +170,7 @@ public class CoronaVirusDataService {
 
             
             newHistoryTotal.add(stateTotal);
-            System.out.println(stateTotal);
+            //System.out.println(stateTotal);
            
         }
 

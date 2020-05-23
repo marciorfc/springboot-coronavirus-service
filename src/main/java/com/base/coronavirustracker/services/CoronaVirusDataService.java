@@ -52,7 +52,11 @@ public class CoronaVirusDataService {
     }
 
     public List<EstadosTotalTO> getLocalCountryHistory() {
-        return allStatesHistory.stream().filter(estadoTO -> estadoTO.getState().equals("TOTAL") && estadoTO.getDate().compareTo("2020-03-10") > 0).collect(Collectors.toList());
+        return getLocalCountryStateHistory("TOTAL");
+    }
+
+    public List<EstadosTotalTO> getLocalCountryStateHistory(String sigla) {
+        return allStatesHistory.stream().filter(estadoTO -> estadoTO.getSigla().equals(sigla) && estadoTO.getDate().compareTo("2020-03-10") > 0).collect(Collectors.toList());
     }
 
     public List<EstadosTotalTO> getAllStatesHistory() {
